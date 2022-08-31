@@ -1,6 +1,7 @@
 import os
 import glob
 import numpy as np
+import random
 
 MIN = 25
 MAX = 55
@@ -10,6 +11,17 @@ class XY():
     def __init__(self, x, y):
         self.x = x
         self.y = y
+    def shuffle(self):
+        assert(len(self.x) == len(self.y))
+        for i in len(self.x):
+            replace_i = random.randint(0, len(self.x))
+            tmp = self.x[i]
+            self.x[i] = self.x[replace_i]
+            self.x[replace_i] = tmp
+
+            tmp = self.y[i]
+            self.y[i] = self.y[replace_i]
+            self.y[replace_i] = tmp
 
 
 class DataStore():
