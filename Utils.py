@@ -1,7 +1,6 @@
 import numpy as np
 
-def get_dynamic_threshold(y, yhat):
-    e = np.abs(y - yhat)
+def get_dynamic_threshold(e):
     candidate_thrs = []
     max = -np.inf
     argmax = np.inf
@@ -10,14 +9,17 @@ def get_dynamic_threshold(y, yhat):
     mu_e = np.mean(e)
     sigma_e = np.std(e)
     for thrs in candidate_thrs:
-        mag = np.linalg.norm(e[e > thrs],ord=1)
         fltr = e[e > thrs]
         if  not len(fltr):
             continue
         d_mu = mu_e - np.mean(fltr)
         d_sigma = sigma_e - np.std(e)
-        test = (d_mu/mu_e + d_sigma/sigma_e)/(mag + mag**2)
+        test = (d_mu/mu_e + d_sigma/sigma_e)/(len(fltr) + len(e)**2)
         if test > max:
             max = test
             argmax = thrs
     return argmax
+
+def classifier_pipe(y, yhat):
+    e = np.abs(y - yhat)  
+    thrs = get_dynamic_threshold
