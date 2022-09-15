@@ -55,12 +55,10 @@ class DataStore():
         xs = []
         ys = []
         for i in range(sample.shape[0]):
-            if i + self.seqLength + 1 >= sample.shape[0]:  # X chunk + Y sequence
+            if i + self.seqLength >= sample.shape[0]:  # X chunk + Y sequence
                 break
             x = sample[i:i+self.seqLength]
             y = sample[i + self.seqLength]
-            #xs.append(x.reshape((sample.shape[1], self.seqLength)))
-            #ys.append(y.reshape((sample.shape[1], 1)))
             xs.append(x)
             ys.append(y)
         return XY(np.array(xs), np.array(ys))
