@@ -1,5 +1,5 @@
 import numpy as np
-
+import pandas as pd
 def get_dynamic_threshold(es):
     candidate_thrs = []
     max = -np.inf
@@ -12,9 +12,10 @@ def get_dynamic_threshold(es):
         fltr = es[es > thrs]
         if not len(fltr):
             continue
-        d_mu = mu_e - np.mean(fltr)
-        d_sigma = sigma_e - np.std(es)
-        test = (d_mu/mu_e + d_sigma/sigma_e)/(len(fltr) + len(es)**2)
+        #d_mu = mu_e - np.mean(fltr)
+        #d_sigma = sigma_e - np.std(es)
+        #test = (d_mu/mu_e + d_sigma/sigma_e)/(len(fltr) + len(es)**2)
+        test = mu_e + thrs*sigma_e
         if test > max:
             max = test
             argmax = thrs
@@ -32,11 +33,33 @@ def classify_pl(y, yhat, window_length):
     assert(y.shape[0] == yhat.shape[0])
     err_fnc = rmse
     e = get_e(y, yhat, err_fnc)
-    labels = np.zeros(y.shape[0])
+    plabels = np.zeros(y.shape[0])
 
     for i in range(0, e.shape[0], window_length):
         es = e[i:i+ window_length]
         thrs = get_dynamic_threshold(es)
-        labels[i:i + window_length] = es > thrs
-    return labels
+        plabels[i:i + window_length] = es > thrs
+    return plabels
 
+def str2ary(str_):
+    x = str_.replace("]","").replace("[","")
+    x = x.split(",")
+    assert(not len(x)%2)
+    lst = []
+    for i in range(0, len(x), 2):
+        tmp = tuple([int(x[i]), int(x[i+1])])
+        lst.append(tmp)
+    return lst
+
+def make_discrete_lbls(lbl_path):
+    lbls = pd.read_csv(lbl_path)
+    labels_dict = {}
+    for rw in lbls.iterrows():
+        labels_dict[rw[1]['chan_id']] = str2ary(rw[1]['anomaly_sequences'])
+    return labels_dict
+
+def vectorize_labels(lst_of_range_tuples, nrows):
+    ret = np.zeros(nrows)
+    for t in lst_of_range_tuples:
+        ret[t[0]:t[1]] = 1
+    return ret
