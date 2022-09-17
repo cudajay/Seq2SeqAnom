@@ -4,7 +4,7 @@ def get_dynamic_threshold(es):
     candidate_thrs = []
     max = -np.inf
     argmax = np.inf
-    for z in np.linspace(0.5, 10, 20):
+    for z in range(2,11):
         candidate_thrs.append(np.mean(es) + z*np.std(es))
     mu_e = np.mean(es)
     sigma_e = np.std(es)
