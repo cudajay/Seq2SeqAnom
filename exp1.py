@@ -16,7 +16,7 @@ import DataStore
 ds = DataStore.DataStore("data", 100)
 X_train = ds.trainData['A-3'].x
 Y_train = ds.trainData['A-3'].y
-Y_train = Y_train.reshape(2636,1,25)
+Y_train = Y_train.reshape(X_train.shape[0],1,25)
 
 model = Sequential()
 model.add(LSTM(256, input_shape=(X_train.shape[1], X_train.shape[2])))
