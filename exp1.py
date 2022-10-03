@@ -28,8 +28,9 @@ model.add(TimeDistributed(Dense(X_train.shape[2])))
 model.compile(optimizer='adam', loss='mae')
 model.summary()
 
+print("starting training")
 history = model.fit(X_train, Y_train, epochs=500, batch_size=1, validation_split=0.2,
                     callbacks=[keras.callbacks.EarlyStopping(monitor='val_loss', patience=50, mode='min')], shuffle=False)
 
-model.save("models/experimental/A-3.h5")
+model.save("models/experimental-1/A-3.h5")
 print("experiment complete\n*10")
